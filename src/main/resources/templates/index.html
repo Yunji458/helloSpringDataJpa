@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{common :: commonHead}">
+  <title>Product Manager</title>
+</head>
+
+<body>
+<div class="container">
+  <h1 class="mt-5">Product List</h1>
+
+  <!-- 관리자만 볼 수 있는 사용자 목록 보기 버튼 -->
+  <div th:if="${userRole == 'ROLE_ADMIN'}">
+    <button class="btn btn-info mb-3"
+            th:attr="data-href=@{/admin/users}"
+            onclick="location.href=this.getAttribute('data-href')">
+      View User List
+    </button>
+  </div>
+
+  <!-- Create 버튼: ROLE_USER는 disabled -->
+  <button class="btn btn-primary mb-3"
+          th:attr="data-href=@{/products/new}"
+          th:disabled="${userRole != 'ROLE_ADMIN'}"
+          onclick="location.href=this.getAttribute('data-href')">
+    Create New Product
+  </button>
+
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Product ID</th>
+      <th>Name</th>
+      <th>Brand</th>
+      <th>Made In</th>
+      <th>Price</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${listProducts}">
+      <td th:text="${product.id}">Product ID</td>
+      <td th:text="${product.name}">Name</td>
+      <td th:text="${product.brand}">Brand</td>
+      <td th:text="${product.madeIn}">Made in</td>
+      <td th:text="${product.price}">Price</td>
+      <td>
+        <!-- Edit 버튼: ROLE_USER는 disabled -->
+        <button class="btn btn-primary btn-sm"
+                th:attr="data-href=@{'/products/edit/' + ${product.id}}"
+                th:disabled="${userRole != 'ROLE_ADMIN'}"
+                onclick="location.href=this.getAttribute('data-href')">
+          Edit
+        </button>
+
+        <!-- Delete 버튼: ROLE_USER는 disabled -->
+        <button class="btn btn-danger btn-sm"
+                th:attr="data-href=@{'/products/delete/' + ${product.id}}"
+                th:disabled="${userRole != 'ROLE_ADMIN'}"
+                onclick="location.href=this.getAttribute('data-href')">
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Bootstrap JS fragment 삽입 -->
+<div th:insert="~{common :: commonScript}"></div>
+</body>
+</html>
